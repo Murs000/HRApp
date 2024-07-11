@@ -83,13 +83,11 @@ namespace HRApp.Controllers
                     worksheet.Cell(i + 2, 3).Value = employees[i].BirthDate.Date.ToShortDateString();
                 }
 
-                // Save the workbook to a memory stream
                 var stream = new MemoryStream();
                 
                 workbook.SaveAs(stream);
                 stream.Position = 0;
 
-                // Return the file as a FileResult
                 return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Employees.xlsx");
                 
             }
@@ -105,10 +103,10 @@ namespace HRApp.Controllers
                 Date = DateTime.UtcNow
             };
             orderRepository.Insert(order);
-            // Define the path to your Word document
+            
             string filePath = "/Users/mursal/Projects/HRApp/Files/document_hrclubaz_72.docx";
 
-            // Define the words to be replaced and their replacements
+            
             List<string> wordsToReplace = ["OrderId", "OrderDate", "EName", "ESName", "EFName", "ESex"];
             List<string> replacementWords = [order.Id.ToString(), order.Date.ToShortDateString(),employee.Name, employee.Surname, employee.FatherName];
 
@@ -120,7 +118,7 @@ namespace HRApp.Controllers
             {
                 replacementWords.Add("qizi");
             }
-            // Load the Word document
+            
             using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
             {
                 XWPFDocument doc = new XWPFDocument(stream);
@@ -130,19 +128,16 @@ namespace HRApp.Controllers
                     ReplaceWordInDoc(doc,wordsToReplace[i],replacementWords[i]);
                 }
 
-                // Save the modified document to a memory stream
                 MemoryStream memoryStream = new MemoryStream();
                 
                 doc.Write(memoryStream);
                     memoryStream.Position = 0;
 
-                // Return the modified document as a FileResult
                 return File(memoryStream, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Employee.docx");
             }
         }
         private XWPFDocument ReplaceWordInDoc(XWPFDocument doc,string wordToReplace,string replacementWord)
         {
-            // Replace the specified word in the document paragraphs
             foreach (var para in doc.Paragraphs)
             {
                 string text = para.ParagraphText;
