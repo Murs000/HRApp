@@ -65,3 +65,10 @@
 /Users/mursal/Projects/HRApp/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Drawing.Common.dll
 /Users/mursal/Projects/HRApp/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Security.Cryptography.ProtectedData.dll
 /Users/mursal/Projects/HRApp/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Windows.Extensions.dll
+/Users/mursal/Projects/HRApp/bin/Debug/net8.0/Dapper.dll
+/Users/mursal/Projects/HRApp/bin/Debug/net8.0/Hangfire.AspNetCore.dll
+/Users/mursal/Projects/HRApp/bin/Debug/net8.0/Hangfire.Core.dll
+/Users/mursal/Projects/HRApp/bin/Debug/net8.0/Hangfire.NetCore.dll
+/Users/mursal/Projects/HRApp/bin/Debug/net8.0/Hangfire.PostgreSql.dll
+/Users/mursal/Projects/HRApp/bin/Debug/net8.0/Hangfire.SqlServer.dll
+/Users/mursal/Projects/HRApp/bin/Debug/net8.0/Newtonsoft.Json.dll

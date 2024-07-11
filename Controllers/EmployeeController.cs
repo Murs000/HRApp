@@ -2,6 +2,7 @@ using System.Drawing.Text;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Packaging;
+using Hangfire;
 using HRApp.DataAccess;
 using HRApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -147,6 +148,13 @@ namespace HRApp.Controllers
                 }
             }
             return doc;
+        }
+        [HttpPost]
+        public IActionResult Email()
+        {
+            RecurringJob.AddOrUpdate(() => Console.WriteLine("Ok"), Cron.Daily);
+
+            return Ok();
         }
     }
 }

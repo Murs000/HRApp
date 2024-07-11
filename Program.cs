@@ -1,3 +1,5 @@
+using Hangfire;
+using Hangfire.PostgreSql;
 using HRApp.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +16,7 @@ app.Run();
 void RegisterServices(IServiceCollection services)
 {
     services.AddControllers();
-    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
 
@@ -22,6 +24,11 @@ void RegisterServices(IServiceCollection services)
     {
         options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(HRAppDb)));
     });
+
+    services.AddHangfire(config =>
+    config.UsePostgreSqlStorage(c =>
+        c.UseNpgsqlConnection(builder.Configuration.GetConnectionString("HangfireConnection"))));
+    services.AddHangfireServer();
 
     services.AddScoped<IEmployeeRepository, EmployeeRepository>();
     services.AddScoped<IOrderRepository, OrderRepository>();
@@ -40,6 +47,8 @@ void Configure(WebApplication app)
     }
 
     app.UseHttpsRedirection();
+
+    app.UseHangfireDashboard();
 
     app.UseAuthorization();
 

@@ -47,6 +47,14 @@
               "target": "Package",
               "version": "[0.102.2, )"
             },
+            "Hangfire": {
+              "target": "Package",
+              "version": "[1.8.14, )"
+            },
+            "Hangfire.PostgreSql": {
+              "target": "Package",
+              "version": "[1.20.9, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.7, )"
