@@ -24,6 +24,7 @@ void RegisterServices(IServiceCollection services)
     });
 
     services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+    services.AddScoped<IOrderRepository, OrderRepository>();
 }
 
 void Configure(WebApplication app)

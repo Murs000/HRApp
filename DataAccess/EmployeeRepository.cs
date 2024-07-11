@@ -20,7 +20,9 @@ public class EmployeeRepository(HRAppDb context) : IEmployeeRepository
 
             entityFromDb.Name = entity.Name;
             entityFromDb.Surname = entity.Surname;
+            entityFromDb.FatherName = entity.FatherName;
             entityFromDb.BirthDate = entity.BirthDate;
+            entityFromDb.Sex = entity.Sex;
             return Save();
         }
 

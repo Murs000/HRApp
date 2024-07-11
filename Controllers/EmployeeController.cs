@@ -1,14 +1,18 @@
+using System.Drawing.Text;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
+using DocumentFormat.OpenXml.Packaging;
 using HRApp.DataAccess;
 using HRApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.SS.Formula.Functions;
+using NPOI.XWPF.UserModel;
 
 namespace HRApp.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class EmployeeController(IEmployeeRepository repository) : ControllerBase
+    public class EmployeeController(IEmployeeRepository repository, IOrderRepository orderRepository) : ControllerBase
     {
         [HttpGet]
         public ActionResult<List<Employee>> Get() => repository.Get();
@@ -57,27 +61,97 @@ namespace HRApp.Controllers
                 return Ok();
             }
         }
-        [HttpGet("Exel")]
-        public FileResult Exel()
+        [HttpGet("Export")]
+        public FileResult ExportEmployeesToExcel()
         {
-            List<Employee> employees= repository.Get();
-            
-            using var workbook = new XLWorkbook();
-            var worksheet = workbook.AddWorksheet("List Of Employees");
-            worksheet.Cell(1,1).Value = "Name";
-            worksheet.Cell(1,2).Value = "Surname";
-            worksheet.Cell(1,3).Value = "Birth Date";
-            for(int i = 0; i < employees.Count; i++)
-            {
-                worksheet.Cell(i+2,1).Value = employees[i].Name;
-                worksheet.Cell(i+2,2).Value = employees[i].Surname;
-                worksheet.Cell(i+2,3).Value = employees[i].BirthDate.Date;
-            }
-            var stream = new MemoryStream();
-            workbook.SaveAs(stream);
-            stream.Position = 0;
+            List<Employee> employees = repository.Get();
 
-            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Employees.xlsx");
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.AddWorksheet("List Of Employees");
+
+                var headerRow = new List<string> { "Name", "Surname", "Birth Date" };
+                for (int col = 0; col < headerRow.Count; col++)
+                {
+                    worksheet.Cell(1, col + 1).Value = headerRow[col];
+                }
+
+                for (int i = 0; i < employees.Count; i++)
+                {
+                    worksheet.Cell(i + 2, 1).Value = employees[i].Name;
+                    worksheet.Cell(i + 2, 2).Value = employees[i].Surname;
+                    worksheet.Cell(i + 2, 3).Value = employees[i].BirthDate.Date.ToShortDateString();
+                }
+
+                // Save the workbook to a memory stream
+                var stream = new MemoryStream();
+                
+                workbook.SaveAs(stream);
+                stream.Position = 0;
+
+                // Return the file as a FileResult
+                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Employees.xlsx");
+                
+            }
+        }
+        [HttpGet("Document/{id}")]
+        public FileResult ExportEmployeeDoc(int id)
+        {
+            Employee employee = repository.Get(id);
+
+            Order order = new()
+            {
+                EmployeeId = employee.Id,
+                Date = DateTime.UtcNow
+            };
+            orderRepository.Insert(order);
+            // Define the path to your Word document
+            string filePath = "/Users/mursal/Projects/HRApp/Files/document_hrclubaz_72.docx";
+
+            // Define the words to be replaced and their replacements
+            List<string> wordsToReplace = ["OrderId", "OrderDate", "EName", "ESName", "EFName", "ESex"];
+            List<string> replacementWords = [order.Id.ToString(), order.Date.ToShortDateString(),employee.Name, employee.Surname, employee.FatherName];
+
+            if(employee.Sex)
+            {
+                replacementWords.Add("oglu");
+            }
+            else
+            {
+                replacementWords.Add("qizi");
+            }
+            // Load the Word document
+            using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
+            {
+                XWPFDocument doc = new XWPFDocument(stream);
+
+                for(int i = 0; i < wordsToReplace.Count; i++)
+                {
+                    ReplaceWordInDoc(doc,wordsToReplace[i],replacementWords[i]);
+                }
+
+                // Save the modified document to a memory stream
+                MemoryStream memoryStream = new MemoryStream();
+                
+                doc.Write(memoryStream);
+                    memoryStream.Position = 0;
+
+                // Return the modified document as a FileResult
+                return File(memoryStream, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Employee.docx");
+            }
+        }
+        private XWPFDocument ReplaceWordInDoc(XWPFDocument doc,string wordToReplace,string replacementWord)
+        {
+            // Replace the specified word in the document paragraphs
+            foreach (var para in doc.Paragraphs)
+            {
+                string text = para.ParagraphText;
+                if (text.Contains(wordToReplace))
+                {
+                    para.ReplaceText(wordToReplace, replacementWord);
+                }
+            }
+            return doc;
         }
     }
 }
