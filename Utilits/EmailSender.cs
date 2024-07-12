@@ -36,13 +36,25 @@ namespace HRApp.Utilits
                 Body = body
             })
             {
-                smtp.Send(message);
+                try
+                {
+                    smtp.Send(message);
+                }
+                catch (SmtpException ex)
+{
+    // Handle or log the exception
+    Console.WriteLine($"SMTP Exception: {ex.Message}");
+    if (ex.InnerException != null)
+    {
+        Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+    }
+}
             }
     
         }
         private SmtpClient Configure(MailAddress fromAddress)
         {
-            string fromPassword = "A111111a!";
+            string fromPassword = "AA1111111111aa!";
         
             var smtp = new SmtpClient
             {
@@ -53,7 +65,7 @@ namespace HRApp.Utilits
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
                 Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
-            };
+            };                          
 
             return smtp;
         }
