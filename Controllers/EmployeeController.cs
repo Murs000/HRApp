@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.Packaging;
 using Hangfire;
 using HRApp.DataAccess;
 using HRApp.Models;
+using HRApp.Utilits;
 using Microsoft.AspNetCore.Mvc;
 using NPOI.SS.Formula.Functions;
 using NPOI.XWPF.UserModel;
@@ -148,13 +149,6 @@ namespace HRApp.Controllers
                 }
             }
             return doc;
-        }
-        [HttpPost]
-        public IActionResult Email()
-        {
-            RecurringJob.AddOrUpdate(() => Console.WriteLine("Ok"), Cron.Daily);
-
-            return Ok();
         }
     }
 }
