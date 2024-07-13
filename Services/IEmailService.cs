@@ -1,8 +1,8 @@
 using HRApp.Models;
 
-namespace HRApp.Utilits
+namespace HRApp.Services
 {
-    public interface IEmailSender
+    public interface IEmailService
     {
         public void SendEmail(List<Employee> employees);
         public void SendDailyEmail();

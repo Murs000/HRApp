@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Hangfire.PostgreSql.Properties;
 
 namespace HRApp.Models
 {

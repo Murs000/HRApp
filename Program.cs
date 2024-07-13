@@ -2,7 +2,7 @@ using System.Net.Mail;
 using Hangfire;
 using Hangfire.PostgreSql;
 using HRApp.DataAccess;
-using HRApp.Utilits;
+using HRApp.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +13,7 @@ var app = builder.Build();
 
 Configure(app);
 
-var emailSender = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider.GetRequiredService<IEmailSender>();
+var emailSender = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider.GetRequiredService<IEmailService>();
 RecurringJob.AddOrUpdate("DailyEmailJob", () => emailSender.SendDailyEmail(), Cron.Daily);
 
 app.Run();
@@ -35,10 +35,10 @@ void RegisterServices(IServiceCollection services)
         c.UseNpgsqlConnection(builder.Configuration.GetConnectionString("HangfireConnection"))));
     services.AddHangfireServer();
 
-    services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-    services.AddScoped<IOrderRepository, OrderRepository>();
+    services.AddScoped<IRepositoryUnitOfWork, RepositoryUnitOfWork>();
 
-    services.AddScoped<IEmailSender, EmailSender>();
+    services.AddScoped<IEmployeeService, EmployeeService>();
+    services.AddScoped<IEmailService, EmailService>();
 }
 
 void Configure(WebApplication app)
