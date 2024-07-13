@@ -77,7 +77,7 @@ namespace HRApp.Services
             };
             repository.OrderRepository.Insert(order);
             
-            string filePath = "/Users/mursal/Projects/HRApp/Files/document_hrclubaz_72.docx";
+            string filePath = "../HRApp/Files/document_hrclubaz_72.docx";
 
             Dictionary<string,string> wordsToReplace2 =   
                 new Dictionary<string, string>(){
