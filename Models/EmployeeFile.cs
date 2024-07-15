@@ -1,14 +1,13 @@
 using System.ComponentModel.DataAnnotations;
-using Hangfire.PostgreSql.Properties;
 
 namespace HRApp.Models
 {
-    public class Order
+    public class EmployeeFile
     {
         [Key]
         public int Id {get; set;}
+        public string FilePath {get; set;} = string.Empty;
         public int EmployeeId {get; set;}
         public Employee Employee {get; set;} = new();
-        public DateTime Date {get; set;} 
     }
 }

@@ -38,6 +38,7 @@ void RegisterServices(IServiceCollection services)
     services.AddScoped<IRepositoryUnitOfWork, RepositoryUnitOfWork>();
 
     services.AddScoped<IEmployeeService, EmployeeService>();
+    services.AddScoped<IFileService,FileService>();
     services.AddScoped<IEmailService, EmailService>();
 }
 

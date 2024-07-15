@@ -8,6 +8,7 @@ namespace HRApp.DataAccess
     public HRAppDb(DbContextOptions<HRAppDb> options) : base(options) {}
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Order> Orders => Set<Order>();
+    public DbSet<EmployeeFile> Files => Set<EmployeeFile>();
 }
 }
 

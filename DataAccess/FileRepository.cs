@@ -2,36 +2,35 @@ using HRApp.Models;
 
 namespace HRApp.DataAccess
 {
-    public class OrderRepository(HRAppDb context) : IOrderRepository
+    public class FileRepository(HRAppDb context) : IFileRepository
     {
-        public List<Order> Get() => context.Orders.ToList();
-        public Order Get(int id) => context.Orders.Find(new object[] { id })  ?? new();
-        public int Insert(Order entity)
+        public List<EmployeeFile> Get() => context.Files.ToList();
+        public EmployeeFile Get(int id) => context.Files.Find(new object[] { id })  ?? new EmployeeFile(){Id = -1};
+        public int Insert(EmployeeFile entity)
         {
-            context.Orders.Add(entity);
+            context.Files.Add(entity);
             return Save();
         }
-        public int Update(Order entity)
+        public int Update(EmployeeFile entity)
         {
-            var entityFromDb = context.Orders.Find(new object[]{entity.Id});
+            var entityFromDb = context.Files.Find(new object[]{entity.Id});
             if (entityFromDb == null) return -1;
 
-            entityFromDb.Date = entity.Date;
+            entityFromDb.FilePath = entity.FilePath;
             entityFromDb.EmployeeId = entity.EmployeeId;
             return Save();
         }
         public bool Delete(int id)
         {
-            var entityFromDb = context.Orders.Find(new object[]{id});
+            var entityFromDb = context.Files.Find(new object[]{id});
             if (entityFromDb == null) 
                 return false;
-            context.Orders.Remove(entityFromDb);
+            context.Files.Remove(entityFromDb);
             Save();
             return true;
         }
         public int Save() => context.SaveChanges();
         protected bool disposed = false;
-
         protected virtual void Dispose(bool disposing)
         {
             if (disposed)
@@ -44,11 +43,11 @@ namespace HRApp.DataAccess
             
             disposed = true;
         }
-
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+        
     }
 }

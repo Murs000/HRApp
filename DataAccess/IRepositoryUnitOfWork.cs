@@ -4,5 +4,6 @@ namespace HRApp.DataAccess
     {
         public IEmployeeRepository EmployeeRepository {get;}
         public IOrderRepository OrderRepository {get;}
+        public IFileRepository FileRepository {get;}
     }
 }
