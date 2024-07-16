@@ -1,10 +1,19 @@
+using DocumentFormat.OpenXml.Office2010.Excel;
 using HRApp.Models;
 
 namespace HRApp.DataAccess
 {
     public class FileRepository(HRAppDb context) : IFileRepository
     {
-        public List<EmployeeFile> Get() => context.Files.ToList();
+        public List<EmployeeFile> Get()
+        {
+            var files = context.Files.ToList();
+            foreach(var file in files)
+            {
+                file.Employee = context.Employees.First(o => o.Id == file.EmployeeId) ?? new Employee{Id = -1};
+            }
+            return files;
+        } 
         public EmployeeFile Get(int id) => context.Files.Find(new object[] { id })  ?? new EmployeeFile(){Id = -1};
         public int Insert(EmployeeFile entity)
         {

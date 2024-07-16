@@ -49,15 +49,25 @@ namespace HRApp.Controllers
             return Ok();
         } 
         [HttpPut]
-        public IActionResult Update(IFormFile file, int fileId, int employeeId)
+        public IActionResult Update(IFormFileCollection files, [FromQuery]int[] fileIds, int employeeId)
         {
-            var path = service.ChangeFile(file,fileId,employeeId);
-            service.Delete(fileId);
-            service.Insert(new EmployeeFile
+            foreach(int id in fileIds)
             {
-                EmployeeId = employeeId,
-                FilePath = path
-            });
+                if(service.Delete(id))
+                {
+                    service.DeleteFile(id);
+                }
+            }
+            foreach(IFormFile file in files )
+            {
+                var path = service.SaveFile(file,employeeId);
+                service.Insert(new EmployeeFile
+                {
+                    EmployeeId = employeeId,
+                    FilePath = path
+                });
+            }
+
             return Ok();
         }
         [HttpDelete("{id}")]

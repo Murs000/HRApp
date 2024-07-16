@@ -16,6 +16,7 @@ namespace HRApp.Services
         }
         public int Insert(EmployeeFile model)
         {
+            model.Employee = repository.EmployeeRepository.Get(model.EmployeeId);
             return repository.FileRepository.Insert(model);
         }
         public int Update(EmployeeFile model)
@@ -48,11 +49,6 @@ namespace HRApp.Services
                 }
             }
             return filePath;
-        }
-        public string ChangeFile(IFormFile file, int fileId, int employeeId)
-        {
-            DeleteFile(fileId);
-            return SaveFile(file, employeeId);
         }
         public bool DeleteFile(int id)
         {
