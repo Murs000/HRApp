@@ -18,7 +18,8 @@ namespace HRApp.Controllers
     {
         [HttpGet]
         public ActionResult<List<Employee>> Get([FromQuery] string? name,[FromQuery] string? surname,[FromQuery] string? fatherName,[FromQuery] bool? sex,
-                                                    [FromQuery] int? maxAge,[FromQuery] int? minAge,[FromQuery] string? term)
+                                                    [FromQuery] int? maxAge,[FromQuery] int? minAge,[FromQuery] string? term,
+                                                            [FromQuery]int pageNumber = 1, [FromQuery]int pageSize = 10)
         {
             if (!string.IsNullOrWhiteSpace(term))
             {
@@ -26,7 +27,10 @@ namespace HRApp.Controllers
                 return Ok(searchResults);
             }
 
-            var products = service.Get(name, surname, fatherName, sex, maxAge, minAge);
+            var products = service.Get(name, surname, fatherName, sex, maxAge, minAge)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
             return Ok(products);
         }
         [HttpGet("{id}")]

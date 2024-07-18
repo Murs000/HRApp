@@ -19,7 +19,10 @@ namespace HRApp.Controllers
     public class FileController(IFileService service) : ControllerBase
     {
         [HttpGet]
-        public ActionResult<List<EmployeeFile>> Get() => service.Get();
+        public ActionResult<List<EmployeeFile>> Get(int pageNumber = 1, int pageSize = 10) => service.Get()
+                                                                                                    .Skip((pageNumber - 1) * pageSize)
+                                                                                                    .Take(pageSize)
+                                                                                                    .ToList();
         [HttpGet("{id}")]
         public IActionResult GetById(int id) 
         {
