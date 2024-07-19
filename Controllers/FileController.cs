@@ -56,9 +56,9 @@ namespace HRApp.Controllers
         {
             foreach(int id in fileIds)
             {
-                if(service.Delete(id))
+                if(service.DeleteFile(id))
                 {
-                    service.DeleteFile(id);
+                    service.Delete(id);
                 }
             }
             foreach(IFormFile file in files )

@@ -33,7 +33,8 @@ namespace HRApp.Services
         }
         public string SaveFile(IFormFile file, int employeeId)
         {
-            var uploadPath = $"../HRApp/Files/{employeeId}";
+            //var uploadPath = $"../HRApp/Files/{employeeId}";
+            var uploadPath = $"../{employeeId}";
             if (!Directory.Exists(uploadPath))
             {
                 Directory.CreateDirectory(uploadPath);
