@@ -10,40 +10,42 @@ namespace HRApp.Utilits
     {
         public static List<T> Deserialize<T>(string URLString) where T : new()
         {
-            XmlTextReader reader = new XmlTextReader (URLString);
-
             List<T> xmlModels = [];
             T model = new();
 
             string propName = string.Empty;
             bool isInProperty = false; 
 
-            while (reader.Read())
-            {          
-                if(reader.NodeType == XmlNodeType.Element && IsHaveProperty(reader.Name))
-                {
-                    isInProperty = true;
-                    propName = reader.Name;
-                }
-                if(reader.NodeType == XmlNodeType.Text && isInProperty)
-                {
-                    PropertyInfo propertyInfo = typeof(T).GetProperty(propName);
-                    if(propertyInfo.GetValue(model).ToString() != string.Empty)
+            using(XmlTextReader reader = new XmlTextReader (URLString))
+            {
+                while (reader.Read())
+                {          
+                    if(reader.NodeType == XmlNodeType.Element && IsHaveProperty<T>(reader.Name))
                     {
-                        xmlModels.Add(model);
-                        model = new();
+                        isInProperty = true;
+                        propName = reader.Name;
                     }
-                    propertyInfo.SetValue(model, Convert.ChangeType(reader.Value, propertyInfo.PropertyType));
+                    if(reader.NodeType == XmlNodeType.Text && isInProperty)
+                    {
+                        PropertyInfo propertyInfo = typeof(T).GetProperty(propName);
+                        if(propertyInfo.GetValue(model).ToString() != string.Empty)
+                        {
+                            xmlModels.Add(model);
+                            model = new();
+                        }
+                        propertyInfo.SetValue(model, Convert.ChangeType(reader.Value, propertyInfo.PropertyType));
 
-                    isInProperty = false;
-                    propName = string.Empty;
+                        isInProperty = false;
+                        propName = string.Empty;
+                    }
                 }
             }
+            xmlModels.RemoveAt(0);
             return xmlModels;
         }
-        private static bool IsHaveProperty(string propartyName)
+        private static bool IsHaveProperty<T>(string propartyName)
         {
-            var propertyNames = typeof(XmlModel).GetProperties()
+            var propertyNames = typeof(T).GetProperties()
                                                 .Select(prop => prop.Name);
 
             foreach (var name in propertyNames)
